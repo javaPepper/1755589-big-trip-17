@@ -6,12 +6,18 @@ import DestinationView from '../view/destination-view.js';
 import TripEventsListView from '../view/trip-events-list-view.js';
 import {render} from '../render.js';
 
-const ITEMQUANTITY = 3;
+//const ITEMQUANTITY = 3;
 
 export default class TripPresenter {
 
-  init = () => {
-  // ------------ Отрисовка фильтров --------------
+  init = (pointsModel) => {
+
+    // ------------- точки маршрута -------------
+    this.pointsModel = pointsModel;
+    this.points = [...this.pointsModel.getPoints()
+    ];
+
+    // ------------ Отрисовка фильтров --------------
     const siteHeaderElement = document.querySelector('.trip-main');
     const tripControls = siteHeaderElement.querySelector('.trip-main__trip-controls');
     render(new TripFiltersView(), tripControls);
@@ -31,8 +37,8 @@ export default class TripPresenter {
     render(new NewTripEventView(), listContainer);
 
     // -------------Отрисовка точки маршрута ---------------
-    for (let i = 0; i < ITEMQUANTITY; i++) {
-      render(new DestinationView(), listContainer);
+    for (let i = 0; i < this.points.length; i++) {
+      render(new DestinationView(this.points[i]), listContainer);
     }
   };
 }

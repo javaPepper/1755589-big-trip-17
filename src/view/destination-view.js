@@ -1,6 +1,10 @@
 import {createElement} from '../render.js';
 
 export default class DestinationView {
+  constructor(point) {
+    this.point = point;
+  }
+
   getTemplate() {
     return `<li class="trip-events__item">
     <div class="event">
@@ -11,14 +15,14 @@ export default class DestinationView {
       <h3 class="event__title">Taxi Amsterdam</h3>
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+          <time class="event__start-time" datetime="2019-03-18T10:30">${this.point.dateFrom}</time>
           &mdash;
-          <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+          <time class="event__end-time" datetime="2019-03-18T11:00">${this.point.dateTo}</time>
         </p>
         <p class="event__duration">30M</p>
       </div>
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">20</span>
+        &euro;&nbsp;<span class="event__price-value">${this.point.basePrice}</span>
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
