@@ -1,16 +1,20 @@
 import {getRandomValue} from './utils.js';
+import {generateDestination} from './destination.js';
+import {generateOffer} from './offer.js';
 
-const pointTypeValues = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+const PRICEVALUES = [100, 300, 506, 800, 900, 990, 1100, 1500, 1700, 2000];
+const TYPEVALUES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 export const generatePoint = () => (
   {
-    basePrice: 1100,
+    basePrice: getRandomValue(PRICEVALUES),
     dateFrom: '2019-07-10T22:55:56.845Z',
     dateTo: '2019-07-11T11:22:13.375Z',
-    //destination: $Destination$,
-    id: '0',
-    isFavorite: false,
-    //offers: $Array<Offer>$,
-    type: getRandomValue(0, pointTypeValues.length - 1)
+    destination: generateDestination(),
+    id: getRandomValue(['0', '1', '2']),
+    isFavorite: false, // На этапе создания это значение - false, при редактировании это значение будет выбрано пользователем.
+    offers: generateOffer(),
+    type: getRandomValue(TYPEVALUES)
   }
 );
+
