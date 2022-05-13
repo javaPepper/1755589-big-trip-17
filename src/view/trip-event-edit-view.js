@@ -15,6 +15,16 @@ offerList += `<div class="event__offer-selector">
 return offerList;
 };
 
+const printOffersPhotos = (photos) => {
+  let photosList = '';
+photos.forEach((photo) => {
+photosList += `<div class="event__photos-tape">
+<img class="event__photo" src=${photo.src} alt="Event photo">
+</div>`
+});
+return photosList;
+};
+
 export default class TripEventEditView {
 
   constructor(destination, offer) {
@@ -125,16 +135,9 @@ export default class TripEventEditView {
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${this.destination.description}</p>
-
         <div class="event__photos-container">
-          <div class="event__photos-tape">
-            <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-            <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-            <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-            <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-            <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
-          </div>
-        </div>
+        ${printOffersPhotos(this.destination.pictures)}
+         </div>
       </section>
     </section>
   </form>`;

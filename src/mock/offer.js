@@ -18,6 +18,3 @@ export const generateOffer = () => (
         }
       ]
    });
-/*for(const element of generateOffer().offers) {
-  console.log(element.title)
-};*/
