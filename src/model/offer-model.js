@@ -1,7 +1,9 @@
 import {generateOffer} from '../mock/offer.js';
 
 export default class OfferModel {
-  offer = generateOffer();
+  #offer = generateOffer();
 
-  getOffer = () => this.offer;
+  get offer () {
+    return this.#offer;
+  }
 }

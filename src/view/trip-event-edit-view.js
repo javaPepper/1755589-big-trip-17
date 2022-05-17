@@ -2,27 +2,27 @@ import {createElement} from '../render.js';
 
 const printOffers = (offers) => {
   let offerList = '';
-offers.forEach((offer) => {
-offerList += `<div class="event__offer-selector">
+  offers.forEach((offer) => {
+    offerList += `<div class="event__offer-selector">
 <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
 <label class="event__offer-label" for="event-offer-luggage-1">
   <span class="event__offer-title">${offer.title}</span>
   &plus;&euro;&nbsp;
   <span class="event__offer-price"${offer.price}</span>
 </label>
-</div>`
-});
-return offerList;
+</div>`;
+  });
+  return offerList;
 };
 
 const printOffersPhotos = (photos) => {
   let photosList = '';
-photos.forEach((photo) => {
-photosList += `<div class="event__photos-tape">
+  photos.forEach((photo) => {
+    photosList += `<div class="event__photos-tape">
 <img class="event__photo" src=${photo.src} alt="Event photo">
-</div>`
-});
-return photosList;
+</div>`;
+  });
+  return photosList;
 };
 
 export default class TripEventEditView {
@@ -31,7 +31,8 @@ export default class TripEventEditView {
     this.destination = destination;
     this.offer = offer;
   }
-  getTemplate() {
+
+  get template() {
     return `<form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -143,15 +144,15 @@ export default class TripEventEditView {
   </form>`;
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.elem) {
+      this.elem = createElement(this.template);
     }
 
-    return this.element;
+    return this.elem;
   }
 
   removeElement() {
-    this.element = null;
+    this.elem = null;
   }
 }

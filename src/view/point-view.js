@@ -5,7 +5,7 @@ export default class PointsView {
     this.point = point;
   }
 
-  getTemplate() {
+  get template() {
     return `<li class="trip-events__item">
     <div class="event">
       <time class="event__date" datetime="2019-03-18">MAR 18</time>
@@ -42,18 +42,18 @@ export default class PointsView {
         <span class="visually-hidden">Open event</span>
       </button>
     </div>
-  </li>`;
+    </li>`;
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.elem) {
+      this.elem = createElement(this.template);
     }
 
-    return this.element;
+    return this.elem;
   }
 
   removeElement() {
-    this.element = null;
+    this.elem = null;
   }
 }
