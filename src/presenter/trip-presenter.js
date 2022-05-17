@@ -49,23 +49,27 @@ export default class TripPresenter {
 
     // -------------- экземпляры классов с их содержимым --------------------
     const pointComponent = new PointsView(points);
-    const formComponent = new TripEventEditView(this.destination, this.points);
+    const formComponent = new TripEventEditView(this.destination, this.offer);
+console.log(formComponent.element)
+console.log(pointComponent.element.querySelector('.event__rollup-btn'))
 
     // -------------- функции по замене элементов ---------------
     const replacePointToForm = () => listContainer.replaceChild(formComponent.element, pointComponent.element);
     const replaceFormToPoint = () => listContainer.replaceChild(pointComponent.element, formComponent.element);
 
     // --------------- на свойстве экз-ра нашел кнопку и повесил слушатель -----
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', {
-      replacePointToForm
+    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replacePointToForm();
     });
 
     // ----------------- на форму вешаю слушатель ---------------
-    formComponent.element.querySelector('.event event--edit').addEventListener('submit', {
-      replaceFormToPoint
+    formComponent.element.querySelector('.event event--edit').addEventListener('submit', (evt)=> {
+      evt.preventDefault();
+      replaceFormToPoint();
     });
 
     // ----------- отрисовка точек в контейнек -------------
     render(pointComponent, listContainer);
+    render(formComponent, listContainer);
   };
 }
