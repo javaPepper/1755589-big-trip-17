@@ -5,6 +5,5 @@ export default class DestinationModel {
 
   get destination () {
     return this.#destination;
-
   }
 }

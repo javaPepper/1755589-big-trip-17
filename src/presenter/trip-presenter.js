@@ -2,7 +2,10 @@ import TripEventEditView from '../view/trip-event-edit-view.js';
 import TripSortView from '../view/trip-sort-view.js';
 import TripFiltersView from '../view/trip-filter-view.js';
 import PointsView from '../view/point-view.js';
-//import TripEventsListView from '../view/trip-events-list-view.js';
+import TripEventsListView from '../view/trip-events-list-view.js';
+import EmptyListForEverything from '../view/empty-list-for-everything-view.js';
+import EmptyListForFuture from '../view/empty-list-for-future-view.js';
+import EmptyListForPast from '../view/empty-list-for-past-view.js';
 import {render} from '../render.js';
 
 export default class TripPresenter {
@@ -30,13 +33,27 @@ export default class TripPresenter {
     const tripEvents = document.querySelector('.trip-events');
     render(new TripSortView(), tripEvents);
 
-    // -------------Отрисовка контейнера форм создания и редактирования -------
-    //render(new TripEventsListView(), tripEvents);
+    // ------------- Отрисовка контейнера  -------
+    render(new TripEventsListView(), tripEvents);
 
-    /*// --------------Отрисовка формы редактироввания --------
-    const listContainer = tripEvents.querySelector('.trip-events__list');
-    render(new TripEventEditView(this.destination, this.offer), listContainer);
-*/
+    // ------------ Отрисовка сообщений list-empty ----------
+    const listEverything = new TripFiltersView().getElement().querySelector('#filter-everything');
+    const listFuture = new TripFiltersView().getElement().querySelector('#filter-future');
+    const listPast = new TripFiltersView().getElement().querySelector('#filter-past');
+    window.addEventListener('load', () => {
+      tripControls.querySelector('.trip-filters').addEventListener('click', (evt) => {
+        if (evt.target === listEverything && (this.points === undefined || this.points === null)) {
+          render(new EmptyListForEverything(), tripEvents);
+        }
+        if (evt.target === listFuture && (this.points === undefined || this.points === null)) {
+          render(new EmptyListForFuture(), tripEvents);
+        }
+        if (evt.target === listPast && (this.points === undefined || this.points === null)) {
+          render(new EmptyListForPast(), tripEvents);
+        }
+      });
+    });
+
     // -------------Отрисовка точки маршрута ---------------
     for (let i = 0; i < this.points.length; i++) {
       this.renderPoints(this.points[i]);
@@ -50,26 +67,35 @@ export default class TripPresenter {
     // -------------- экземпляры классов с их содержимым --------------------
     const pointComponent = new PointsView(points);
     const formComponent = new TripEventEditView(this.destination, this.offer);
-console.log(formComponent.element)
-console.log(pointComponent.element.querySelector('.event__rollup-btn'))
 
+    // ----------- отрисовка точек в контейнер -------------
+    render(pointComponent, listContainer);
+    //render(formComponent, listContainer);
     // -------------- функции по замене элементов ---------------
-    const replacePointToForm = () => listContainer.replaceChild(formComponent.element, pointComponent.element);
-    const replaceFormToPoint = () => listContainer.replaceChild(pointComponent.element, formComponent.element);
+    const replacePointToForm = (point) => listContainer.replaceChild(formComponent.getElement(), point.getElement());
+    const replaceFormToPoint = () => listContainer.replaceChild(pointComponent.getElement(), formComponent.getElement());
 
     // --------------- на свойстве экз-ра нашел кнопку и повесил слушатель -----
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-      replacePointToForm();
+    pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', (evt) => {
+      replacePointToForm(evt.target);
     });
 
     // ----------------- на форму вешаю слушатель ---------------
-    formComponent.element.querySelector('.event event--edit').addEventListener('submit', (evt)=> {
+    formComponent.getElement().addEventListener('submit', (evt)=> {
       evt.preventDefault();
       replaceFormToPoint();
     });
 
-    // ----------- отрисовка точек в контейнек -------------
-    render(pointComponent, listContainer);
-    render(formComponent, listContainer);
+    // ----------------- закрытие формы при Esc ---------
+    document.addEventListener('keydown', (evt) => {
+      if (evt.target === 'Escape') {
+        replaceFormToPoint();
+      }
+    });
+
+    // ----------------- закрытие формы по клику -----------
+    pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceFormToPoint();
+    });
   };
 }

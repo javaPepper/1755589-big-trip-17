@@ -45,7 +45,7 @@ export default class PointsView {
     </li>`;
   }
 
-  get element() {
+  getElement() {
     if (!this.elem) {
       this.elem = createElement(this.template);
     }

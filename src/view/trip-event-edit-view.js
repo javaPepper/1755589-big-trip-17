@@ -144,7 +144,7 @@ export default class TripEventEditView {
   </form>`;
   }
 
-  get element() {
+  getElement() {
     if (!this.elem) {
       this.elem = createElement(this.template);
     }
