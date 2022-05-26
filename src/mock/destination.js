@@ -18,10 +18,10 @@ export const generateDestination = () => (
   {
     description: getRandomValue(DESCRIPTIONS.split('.')),
     name: getRandomValue(NAMES.split(',')),
-    /*pictures: [
+    pictures: [
       {
         src: 'http://picsum.photos/300/200?r=0.0762563005163317',
         //description: 'Chamonix parliament building' Не могу понять что за описание и где в разметке оно находится.
       }
-    ]*/
+    ]
   });
