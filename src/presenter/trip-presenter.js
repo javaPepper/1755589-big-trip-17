@@ -4,8 +4,6 @@ import TripFiltersView from '../view/trip-filter-view.js';
 import PointsView from '../view/point-view.js';
 import TripEventsListView from '../view/trip-events-list-view.js';
 import EmptyListForEverything from '../view/empty-list-for-everything-view.js';
-import EmptyListForFuture from '../view/empty-list-for-future-view.js';
-import EmptyListForPast from '../view/empty-list-for-past-view.js';
 import {render} from '../render.js';
 
 export default class TripPresenter {
@@ -35,25 +33,6 @@ export default class TripPresenter {
 
     // ------------- Отрисовка контейнера  -------
     render(new TripEventsListView(), tripEvents);
-
-    // ------------ Отрисовка сообщений list-empty ----------
-    const listEverything = new TripFiltersView().getElement().querySelector('#filter-everything');
-    const listFuture = new TripFiltersView().getElement().querySelector('#filter-future');
-    const listPast = new TripFiltersView().getElement().querySelector('#filter-past');
-
-    window.addEventListener('load', () => {
-      tripControls.querySelector('.trip-filters').addEventListener('click', (evt) => {
-        if (evt.target === listEverything && (this.points === undefined || this.points === null)) {
-          render(new EmptyListForEverything(), tripEvents);
-        }
-        if (evt.target === listFuture && (this.points === undefined || this.points === null)) {
-          render(new EmptyListForFuture(), tripEvents);
-        }
-        if (evt.target === listPast && (this.points === undefined || this.points === null)) {
-          render(new EmptyListForPast(), tripEvents);
-        }
-      });
-    });
 
     // ------------- Отрисовка сообщения при отсутствии точек -----------
     if (this.points.length === 0) {
