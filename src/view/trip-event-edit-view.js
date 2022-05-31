@@ -144,4 +144,14 @@ export default class TripEventEditView extends AbstractView {
     </section>
   </form>`;
   }
+
+  setFormSubmitHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.addEventListener('submit', this.#editClickHandler);
+  };
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 }

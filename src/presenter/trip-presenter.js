@@ -63,13 +63,12 @@ export default class TripPresenter {
     const replaceFormToPoint = () => listContainer.replaceChild(pointComponent.element, formComponent.element);
 
     // --------------- на свойстве экз-ра нашел кнопку и повесил слушатель -----
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointComponent.setEditClickHandler(() => {
       replacePointToForm();
     });
 
     // ----------------- на форму вешаю слушатель ---------------
-    formComponent.element.addEventListener('submit', (evt)=> {
-      evt.preventDefault();
+    formComponent.setFormSubmitHandler(() => {
       replaceFormToPoint();
     });
 
