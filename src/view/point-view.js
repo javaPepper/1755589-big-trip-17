@@ -1,7 +1,8 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
-export default class PointsView {
+export default class PointsView extends AbstractView {
   constructor(point) {
+    super();
     this.point = point;
   }
 
@@ -43,17 +44,5 @@ export default class PointsView {
       </button>
     </div>
     </li>`;
-  }
-
-  getElement() {
-    if (!this.elem) {
-      this.elem = createElement(this.template);
-    }
-
-    return this.elem;
-  }
-
-  removeElement() {
-    this.elem = null;
   }
 }

@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const printOffers = (offers) => {
   let offerList = '';
@@ -25,9 +25,10 @@ const printOffersPhotos = (photos) => {
   return photosList;
 };
 
-export default class TripEventEditView {
+export default class TripEventEditView extends AbstractView {
 
   constructor(destination, offer) {
+    super();
     this.destination = destination;
     this.offer = offer;
   }
@@ -142,17 +143,5 @@ export default class TripEventEditView {
       </section>
     </section>
   </form>`;
-  }
-
-  getElement() {
-    if (!this.elem) {
-      this.elem = createElement(this.template);
-    }
-
-    return this.elem;
-  }
-
-  removeElement() {
-    this.elem = null;
   }
 }

@@ -59,16 +59,16 @@ export default class TripPresenter {
     render(pointComponent, listContainer);
 
     // -------------- функции по замене элементов ---------------
-    const replacePointToForm = () => listContainer.replaceChild(formComponent.getElement(), pointComponent.getElement());
-    const replaceFormToPoint = () => listContainer.replaceChild(pointComponent.getElement(), formComponent.getElement());
+    const replacePointToForm = () => listContainer.replaceChild(formComponent.element, pointComponent.element);
+    const replaceFormToPoint = () => listContainer.replaceChild(pointComponent.element, formComponent.element);
 
     // --------------- на свойстве экз-ра нашел кнопку и повесил слушатель -----
-    pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
       replacePointToForm();
     });
 
     // ----------------- на форму вешаю слушатель ---------------
-    formComponent.getElement().addEventListener('submit', (evt)=> {
+    formComponent.element.addEventListener('submit', (evt)=> {
       evt.preventDefault();
       replaceFormToPoint();
     });

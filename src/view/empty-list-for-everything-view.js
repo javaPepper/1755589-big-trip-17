@@ -1,24 +1,13 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
-export default class EmptyListForEverything {
+export default class EmptyListForEverything extends AbstractView {
 
   constructor (message) {
+    super();
     this.message = message;
   }
 
   get template() {
     return `<p class="trip-events__msg">${this.message}</p>`;
-  }
-
-  getElement() {
-    if (!this.elem) {
-      this.elem = createElement(this.template);
-    }
-
-    return this.elem;
-  }
-
-  removeElement() {
-    this.elem = null;
   }
 }
