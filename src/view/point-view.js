@@ -1,7 +1,8 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
-export default class PointsView {
+export default class PointsView extends AbstractView {
   constructor(point) {
+    super();
     this.point = point;
   }
 
@@ -45,15 +46,13 @@ export default class PointsView {
     </li>`;
   }
 
-  getElement() {
-    if (!this.elem) {
-      this.elem = createElement(this.template);
-    }
+  setEditClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  };
 
-    return this.elem;
-  }
-
-  removeElement() {
-    this.elem = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 }
