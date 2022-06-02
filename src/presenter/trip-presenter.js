@@ -78,5 +78,14 @@ export default class TripPresenter {
         replaceFormToPoint();
       }
     });
+/*
+    // ------------- На точку вешаю добавление в избранное --------
+    pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
+  };
+
+  #handleFavoriteClick = () => {
+    {...this.points, isFavoriteButton()}
+  };
+  */
   };
 }
