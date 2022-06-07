@@ -3,17 +3,22 @@ import TripFiltersView from '../view/trip-filter-view.js';
 import TripEventsListView from '../view/trip-events-list-view.js';
 import EmptyListForEverything from '../view/empty-list-for-everything-view.js';
 import PointPresenter from '../presenter/point-presenter.js';
+import {updateItem} from '../mock/utils.js';
 import {render} from '../framework/render.js';
 
 export default class TripPresenter {
 
   tripEvents = document.querySelector('.trip-events');
+  points = [];
+  sourcedPoints = [];
+  #pointPresenter = new Map();
 
   init = (pointsModel, destinationModel, offerModel) => {
 
     // ------------- точки маршрута -------------
     this.pointsModel = pointsModel;
     this.points = [...this.pointsModel.points];
+    this.sourcedPoints = [...this.pointsModel.points];
 
     // ------------ destination точки -----------
     this.destinationModel = destinationModel;
@@ -34,6 +39,12 @@ export default class TripPresenter {
 
     // -------------Отрисовка точки маршрута ---------------
     this.renderPoints();
+  };
+
+  handlePointChange = (updatedPoint) => {
+    this.points = updateItem(this.points, updatedPoint);
+    this.sourcedPoints = updateItem(this.sourcedPoints, updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
   renderFilters = () => {
@@ -63,7 +74,7 @@ export default class TripPresenter {
   };
 
   renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.destination, this.offer);
+    const pointPresenter = new PointPresenter(this.destination, this.offer, this.handlePointChange);
     pointPresenter.init(point);
   };
 }
