@@ -1,18 +1,24 @@
-import TripEventEditView from '../view/trip-event-edit-view.js';
 import TripSortView from '../view/trip-sort-view.js';
 import TripFiltersView from '../view/trip-filter-view.js';
-import PointsView from '../view/point-view.js';
 import TripEventsListView from '../view/trip-events-list-view.js';
 import EmptyListForEverything from '../view/empty-list-for-everything-view.js';
-import {render} from '../render.js';
+import PointPresenter from '../presenter/point-presenter.js';
+import {updateItem} from '../mock/utils.js';
+import {render} from '../framework/render.js';
 
 export default class TripPresenter {
+
+  tripEvents = document.querySelector('.trip-events');
+  points = [];
+  sourcedPoints = [];
+  #pointPresenter = new Map();
 
   init = (pointsModel, destinationModel, offerModel) => {
 
     // ------------- точки маршрута -------------
     this.pointsModel = pointsModel;
     this.points = [...this.pointsModel.points];
+    this.sourcedPoints = [...this.pointsModel.points];
 
     // ------------ destination точки -----------
     this.destinationModel = destinationModel;
@@ -23,23 +29,44 @@ export default class TripPresenter {
     this.offer = this.offerModel.offer;
 
     // ------------ Отрисовка фильтров --------------
+    this.renderFilters();
+
+    // ------------ Отрисовка сортировки ----------
+    this.renderSort();
+
+    // ------------- Отрисовка контейнера  -------
+    this.renderContainer();
+
+    // -------------Отрисовка точки маршрута ---------------
+    this.renderPoints();
+  };
+
+  handlePointChange = (updatedPoint) => {
+    this.points = updateItem(this.points, updatedPoint);
+    this.sourcedPoints = updateItem(this.sourcedPoints, updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
+  };
+
+  renderFilters = () => {
     const siteHeaderElement = document.querySelector('.trip-main');
     const tripControls = siteHeaderElement.querySelector('.trip-main__trip-controls');
     render(new TripFiltersView(), tripControls);
+  };
 
-    // ------------ Отрисовка сортировки ----------
-    const tripEvents = document.querySelector('.trip-events');
-    render(new TripSortView(), tripEvents);
+  renderSort = () => {
+    render(new TripSortView(), this.tripEvents);
+  };
 
-    // ------------- Отрисовка контейнера  -------
-    render(new TripEventsListView(), tripEvents);
+  renderContainer = () => {
+    render(new TripEventsListView(), this.tripEvents);
+  };
 
+  renderPoints = () => {
     // ------------- Отрисовка сообщения при отсутствии точек -----------
     if (this.points.length === 0) {
       render(new EmptyListForEverything('Click New Event to create your first point'));
     }
     else {
-    // -------------Отрисовка точки маршрута ---------------
       for (let i = 0; i < this.points.length; i++) {
         this.renderPoint(this.points[i]);
       }
@@ -47,36 +74,8 @@ export default class TripPresenter {
   };
 
   renderPoint = (point) => {
-
-    // ------------- контейнер для отрисовки точек и формы ------------------
-    const listContainer = document.querySelector('.trip-events').querySelector('.trip-events__list');
-
-    // -------------- экземпляры классов с их содержимым --------------------
-    const pointComponent = new PointsView(point);
-    const formComponent = new TripEventEditView(this.destination, this.offer);
-
-    // ----------- отрисовка точек в контейнер -------------
-    render(pointComponent, listContainer);
-
-    // -------------- функции по замене элементов ---------------
-    const replacePointToForm = () => listContainer.replaceChild(formComponent.element, pointComponent.element);
-    const replaceFormToPoint = () => listContainer.replaceChild(pointComponent.element, formComponent.element);
-
-    // --------------- на свойстве экз-ра нашел кнопку и повесил слушатель -----
-    pointComponent.setEditClickHandler(() => {
-      replacePointToForm();
-    });
-
-    // ----------------- на форму вешаю слушатель ---------------
-    formComponent.setFormSubmitHandler(() => {
-      replaceFormToPoint();
-    });
-
-    // ----------------- закрытие формы при Esc ---------
-    document.addEventListener('keydown', (evt) => {
-      if (evt.key === 'Escape') {
-        replaceFormToPoint();
-      }
-    });
+    const pointPresenter = new PointPresenter(this.destination, this.offer, this.handlePointChange);
+    pointPresenter.init(point);
+    this.#pointPresenter.set(point.id, pointPresenter);
   };
 }
