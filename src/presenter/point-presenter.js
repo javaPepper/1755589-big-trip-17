@@ -12,13 +12,15 @@ export default class PointPresenter {
 
   pointComponent = null;
   pointEditComponent = null;
-  //point = null;
+  listContainer = null;
+  cancelButton = null;
+  arrowButton = null;
 
   init = (point) => {
     this.point = point;
 
     // ------------- контейнер для отрисовки точек и формы ------------------
-    const listContainer = document.querySelector('.trip-events').querySelector('.trip-events__list');
+    this.listContainer = document.querySelector('.trip-events').querySelector('.trip-events__list');
 
     const prevPointComponent = this.pointComponent;
     const prevFormComponent = this.formComponent;
@@ -27,41 +29,56 @@ export default class PointPresenter {
     this.pointComponent = new PointsView(this.point);
     this.formComponent = new TripEventEditView(this.destination, this.offer);
 
-    // -------------- функции по замене элементов ---------------
-    const replacePointToForm = () => listContainer.replaceChild(this.formComponent.element, this.pointComponent.element);
-    const replaceFormToPoint = () => listContainer.replaceChild(this.pointComponent.element, this.formComponent.element);
+    // --------------- смена точки на форму ---------------------
+    this.pointComponent.setEditClickHandler(this.replacePointToForm);
 
-    // --------------- на свойстве экз-ра нашел кнопку и повесил слушатель -----
-    this.pointComponent.setEditClickHandler(replacePointToForm);
+    // -------------- закрытие формы через стрелку ---------------
+    this.formComponent.setArrowClickHandler(this.replaceFormToPoint);
+
+    // ----------------- закрыте формы через cancel -----------
+    this.formComponent.setCancelClickHandler(this.replaceFormToPoint);
 
     // ----------------- на форму вешаю слушатель ---------------
-    this.formComponent.setFormSubmitHandler(replaceFormToPoint);
+    this.formComponent.setFormSubmitHandler(this.replaceFormToPoint);
 
+    // ----------------- слушатель кнопки избранное -------------
     this.pointComponent.setFavoriteClickHandler(this.handleFavoriteClick);
 
     // ----------------- проверка на наличие элементов и отрисовка точек -------
     if (prevPointComponent === null || prevFormComponent === null) {
-      render(this.pointComponent, listContainer);
+      render(this.pointComponent, this.listContainer);
       return;
     }
 
     // ----------------- проверка на наличие элементов в DOM -----------
-    if (listContainer.contains(prevPointComponent.element)) {
+    if (this.listContainer.contains(prevPointComponent.element)) {
       replace(this.pointComponent, prevPointComponent);
     }
 
-    if (listContainer.contains(prevFormComponent.element)) {
+    if (this.listContainer.contains(prevFormComponent.element)) {
       replace(this.formComponent, prevFormComponent);
     }
     remove(prevPointComponent);
     remove(prevFormComponent);
+  };
 
-    // ----------------- закрытие формы при Esc ---------
-    document.addEventListener('keydown', (evt) => {
-      if (evt.key === 'Escape') {
-        this.replaceFormToPoint();
-      }
-    });
+  // -------------- функции по замене элементов ---------------
+  replacePointToForm = () => {
+    this.listContainer.replaceChild(this.formComponent.element, this.pointComponent.element);
+    document.addEventListener('keydown', this.shutDownHandler);
+  };
+
+  replaceFormToPoint = () => {
+    this.listContainer.replaceChild(this.pointComponent.element, this.formComponent.element);
+    document.removeEventListener('keydown', this.shutDownHandler);
+  };
+
+  // ----------------- закрытие формы при Esc ---------
+  shutDownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.replaceFormToPoint();
+    }
   };
 
   handleFavoriteClick = () => {

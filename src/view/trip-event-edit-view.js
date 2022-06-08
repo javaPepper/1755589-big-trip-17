@@ -125,6 +125,7 @@ export default class TripEventEditView extends AbstractView {
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Cancel</button>
+      <button class="event__rollup-btn" type="button">
     </header>
     <section class="event__details">
       <section class="event__section  event__section--offers">
@@ -147,11 +148,31 @@ export default class TripEventEditView extends AbstractView {
 
   setFormSubmitHandler = (callback) => {
     this._callback.editClick = callback;
-    this.element.addEventListener('submit', this.#editClickHandler);
+    this.element.addEventListener('submit', this.editClickHandler);
   };
 
-  #editClickHandler = (evt) => {
+  setArrowClickHandler = (callback) => {
+    this._callback.arrowClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.arrowClickHandler);
+  };
+
+  setCancelClickHandler = (callback) => {
+    this._callback.cancelClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.cancelClickHandler);
+  };
+
+  editClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
+  };
+
+  arrowClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.arrowClick();
+  };
+
+  cancelClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.cancelClick();
   };
 }
