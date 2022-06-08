@@ -5,6 +5,7 @@ import EmptyListForEverything from '../view/empty-list-for-everything-view.js';
 import PointPresenter from '../presenter/point-presenter.js';
 import {updateItem} from '../mock/utils.js';
 import {render} from '../framework/render.js';
+import { SortType } from '../mock/const.js';
 
 export default class TripPresenter {
 
@@ -12,6 +13,8 @@ export default class TripPresenter {
   points = [];
   sourcedPoints = [];
   #pointPresenter = new Map();
+  sortComponent = new TripSortView();
+  currentSortType = SortType.DEFAULT;
 
   init = (pointsModel, destinationModel, offerModel) => {
 
@@ -57,8 +60,32 @@ export default class TripPresenter {
     render(new TripFiltersView(), tripControls);
   };
 
+  sortPoints = (sortType) => {
+    switch (sortType) {
+      case SortType.PRICE:
+        this.points.sort();
+        break;
+      case SortType.TIME:
+        this.points.sort();
+        break;
+      default:
+        this.points = [...this.sourcedPoints];
+    }
+
+    this.currentSortType = sortType;
+  };
+
+  handleSortTypeChange = (sortType) => {
+    if (this.currentSortType === sortType) {
+      return;
+    }
+
+    this.sortPoints(sortType);
+  };
+
   renderSort = () => {
-    render(new TripSortView(), this.tripEvents);
+    render(this.sortComponent, this.tripEvents);
+    this.sortComponent.setSortTypeChangeHandler(this.handleSortTypeChange);
   };
 
   renderContainer = () => {

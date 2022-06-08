@@ -57,12 +57,10 @@ export default class PointPresenter {
     }
 
     // ----------------- проверка на наличие элементов в DOM -----------
-    //if (this.listContainer.contains(prevPointComponent.element)) {
     if (this.mode === Mode.DEFAULT) {
       replace(this.pointComponent, prevPointComponent);
     }
 
-    //if (this.listContainer.contains(prevFormComponent.element)) {
     if (this.mode === Mode.EDITING) {
       replace(this.formComponent, prevFormComponent);
     }
