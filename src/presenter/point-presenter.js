@@ -2,19 +2,25 @@ import TripEventEditView from '../view/trip-event-edit-view.js';
 import PointsView from '../view/point-view.js';
 import {render, remove, replace} from '../framework/render.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING'
+};
+
 export default class PointPresenter {
 
-  constructor (destination, offer, changeData) {
+  constructor (destination, offer, changeData, changeMode) {
     this.destination = destination;
     this.offer = offer;
     this.changeData = changeData;
+    this.changeMode = changeMode;
   }
 
   pointComponent = null;
   pointEditComponent = null;
   listContainer = null;
-  cancelButton = null;
-  arrowButton = null;
+  changeMode = null;
+  mode = Mode.DEFAULT;
 
   init = (point) => {
     this.point = point;
@@ -51,26 +57,37 @@ export default class PointPresenter {
     }
 
     // ----------------- проверка на наличие элементов в DOM -----------
-    if (this.listContainer.contains(prevPointComponent.element)) {
+    //if (this.listContainer.contains(prevPointComponent.element)) {
+    if (this.mode === Mode.DEFAULT) {
       replace(this.pointComponent, prevPointComponent);
     }
 
-    if (this.listContainer.contains(prevFormComponent.element)) {
+    //if (this.listContainer.contains(prevFormComponent.element)) {
+    if (this.mode === Mode.EDITING) {
       replace(this.formComponent, prevFormComponent);
     }
     remove(prevPointComponent);
     remove(prevFormComponent);
   };
 
+  resetView = () => {
+    if (this.mode !== Mode.DEFAULT) {
+      this.replaceFormToPoint();
+    }
+  };
+
   // -------------- функции по замене элементов ---------------
   replacePointToForm = () => {
     this.listContainer.replaceChild(this.formComponent.element, this.pointComponent.element);
     document.addEventListener('keydown', this.shutDownHandler);
+    this.changeMode();
+    this.mode = Mode.EDITING;
   };
 
   replaceFormToPoint = () => {
     this.listContainer.replaceChild(this.pointComponent.element, this.formComponent.element);
     document.removeEventListener('keydown', this.shutDownHandler);
+    this.mode = Mode.DEFAULT;
   };
 
   // ----------------- закрытие формы при Esc ---------
