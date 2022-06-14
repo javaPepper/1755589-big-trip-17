@@ -5,12 +5,13 @@ import EmptyListForEverything from '../view/empty-list-for-everything-view.js';
 import PointPresenter from '../presenter/point-presenter.js';
 import {updateItem} from '../mock/utils.js';
 import {render} from '../framework/render.js';
+//import { sortPoints } from '../mock/point.js';
 import { SortType } from '../mock/const.js';
 
 export default class TripPresenter {
 
   tripEvents = document.querySelector('.trip-events');
-  points = [];
+  //points = [];
   sourcedPoints = [];
   #pointPresenter = new Map();
   sortComponent = new TripSortView();
@@ -50,7 +51,7 @@ export default class TripPresenter {
     this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
   };
 
-  #handleModeChange = () => {
+  handleModeChange = () => {
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
   };
 
@@ -63,10 +64,10 @@ export default class TripPresenter {
   sortPoints = (sortType) => {
     switch (sortType) {
       case SortType.PRICE:
-        this.points.sort();
+        this.points.slice().sort((a, b) => b.basePrice - a.basePrice);
         break;
       case SortType.TIME:
-        this.points.sort();
+        this.points.slice().sort((a, b) => b.dateFrom - a.dateFrom);
         break;
       default:
         this.points = [...this.sourcedPoints];
@@ -79,8 +80,9 @@ export default class TripPresenter {
     if (this.currentSortType === sortType) {
       return;
     }
-
+    this.removePoints();
     this.sortPoints(sortType);
+    this.renderPoints();
   };
 
   renderSort = () => {
@@ -105,8 +107,12 @@ export default class TripPresenter {
   };
 
   renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.destination, this.offer, this.handlePointChange, this.#handleModeChange);
+    const pointPresenter = new PointPresenter(this.destination, this.offer, this.handlePointChange, this.handleModeChange);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
+  };
+
+  removePoints = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
   };
 }
